@@ -1,0 +1,194 @@
+THREE.SceneUtils = {
+
+	createMultiMaterialObject: function ( geometry, materials ) {
+
+		var group = new THREE.Group();
+
+		for ( var i = 0, l = materials.length; i < l; i ++ ) {
+
+			group.add( new THREE.Mesh( geometry, materials[ i ] ) );
+
+		}
+
+		return group;
+
+	},
+
+	detach: function ( child, parent, scene ) {
+
+		child.applyMatrix( parent.matrixWorld );
+		parent.remove( child );
+		scene.add( child );
+
+	},
+
+	attach: function ( child, scene, parent ) {
+
+		child.applyMatrix( new THREE.Matrix4().getInverse( parent.matrixWorld ) );
+
+		scene.remove( child );
+		parent.add( child );
+
+	}
+
+};
+
+class Terrain{
+    constructor(scene, options){
+        this.uniforms = null;
+        this.plane_mesh = null;
+        this.plane_geometry = null;
+        this.groundMaterial = null;
+        this.clock = new THREE.Clock(!0);
+        this.scene = scene;
+        this.options = options;
+
+        this.init();
+    }
+
+
+    init(){
+        this.uniforms = {
+            time: {
+                type: "f",
+                value: 0
+            },
+            speed: {
+                type: "f",
+                value: this.options.speed
+            },
+            elevation: {
+                type: "f",
+                value: this.options.elevation
+            },
+            noise_range: {
+                type: "f",
+                value: this.options.noise_range
+            },
+            offset: {
+                type: "f",
+                value: this.options.elevation
+            },
+            perlin_passes: {
+                type: "f",
+                value: this.options.perlin_passes
+            },
+            sombrero_amplitude: {
+                type: "f",
+                value: this.options.sombrero_amplitude
+            },
+            sombrero_frequency: {
+                type: "f",
+                value: this.options.sombrero_frequency
+            },
+            line_color: {
+                type: "c",
+                value: new THREE.Color(this.options.wireframe_color)
+            }
+        }
+        this.buildPlanes(this.options.segments);
+    }
+
+    buildPlanes(segments){
+        this.plane_geometry = new THREE.PlaneBufferGeometry(20,20,segments,segments);
+        this.plane_material = new THREE.ShaderMaterial({
+            vertexShader: document.getElementById("shader-vertex-terrain-perlinsombrero").textContent,
+            fragmentShader: document.getElementById("shader-fragment-terrain").textContent,
+            wireframe: this.options.wireframe,
+            wireframeLinewidth: 1,
+            transparent: !0,
+            uniforms: this.uniforms
+        });
+        this.materials = [this.plane_material];
+        this.plane_mesh = THREE.SceneUtils.createMultiMaterialObject(this.plane_geometry, this.materials);
+        this.plane_mesh.rotation.x = -Math.PI / 2;
+        this.plane_mesh.position.y = -.5;
+    }
+
+    update(){
+        this.plane_material.uniforms.time.value = this.clock.getElapsedTime();
+    }
+}
+
+class Animate{
+    constructor(settings){
+        this.canvasGL = null;
+        this.container = document.createElement("div");
+        this.scene = new THREE.Scene;
+        this.camera = new THREE.PerspectiveCamera(60,window.innerWidth / window.innerHeight,.1,1e5);
+        this.geometry = null;
+        this.material = null;
+        this.mesh = null;
+        this.terrain = null;
+        this.composer = null;
+        this.render_pass = null;
+        this.fxaa_pass = null;
+        this.posteffect = !1;
+        this.meteo = null;
+        this.skybox = null;
+        this.terrainOptions = settings;
+        this.renderer = new THREE.WebGLRenderer({
+            width: window.innerWidth,
+            height: window.innerHeight,
+            scale: 1,
+            antialias: !1,
+            alpha: !0
+        });
+
+
+        this.init();
+        $(window).on("resize", () => {
+            this.resize(window.innerWidth, window.innerHeight)
+        })
+    }
+
+
+    init(){
+        this.camera.position.z = 7;
+        this.camera.position.y = 1;
+        this.camera.lookAt(new THREE.Vector3),
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.container.id = "canvasGL";
+        this.container.appendChild(this.renderer.domElement);
+        document.getElementById("mountains-bg").appendChild(this.container)
+        this.terrain = new Terrain(this.scene,this.terrainOptions);
+        this.scene.add(this.terrain.plane_mesh);
+        this.update();
+    }
+
+
+    update(){
+        requestAnimationFrame(this.update.bind(this));
+        this.terrain.update();
+        this.renderScene();
+    }
+
+    renderScene(){
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    resize(width, height){
+        this.camera.aspect = width / height,
+        this.camera.updateProjectionMatrix(),
+        this.renderer.setSize(width, height)
+    }
+}
+
+
+
+
+let settings = {
+    elevation: "-2.4",
+    floor_visible: false,
+    noise_range: "1",
+    perlin_passes: "2",
+    segments: 250,
+    sombrero_amplitude: "0.1",
+    sombrero_frequency: "51",
+    speed: "-0.30",
+    wireframe: true,
+    wireframe_color: "#00effc",
+}
+
+
+new Animate(settings);

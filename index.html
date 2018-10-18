@@ -2,17 +2,49 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css" />
+  <style>
+    .manage{
+      position: absolute;
+      width: 250px;
+      top: 0;
+      right: 0;
+      padding: 5px;
+      background-color: rgba(0, 0, 0, 0.192);
+    }
+
+    .prop-wrapper{
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .prop-wrapper>div{
+      width: 30px;
+      flex-flow: 0;
+    }
+
+    .prop-wrapper>label{
+      flex-grow: 1;
+    }
+    .prop-wrapper>input{
+      width: 100%;
+      order: 2;
+      
+    }
+    
+  </style>
 </head>
 
 <body>
-    <div id="mountains-bg">
+  <div id="mountains-bg">
 
-        <script id="shader-vertex-terrain-perlin" type="x-shader/x-vertex">
+    <script id="shader-vertex-terrain-perlin" type="x-shader/x-vertex">
 
 
                     vec3 mod289(vec3 x)
@@ -238,7 +270,7 @@
                 </script>
 
 
-        <script id="shader-vertex-terrain-perlinsombrero" type="x-shader/x-vertex">
+    <script id="shader-vertex-terrain-perlinsombrero" type="x-shader/x-vertex">
 
 
                     vec3 mod289(vec3 x)
@@ -466,7 +498,7 @@
       
                 </script>
 
-        <script id="shader-fragment-terrain" type="x-shader/x-fragment">
+    <script id="shader-fragment-terrain" type="x-shader/x-fragment">
 
                         varying vec2 v_uv;
                         varying vec3 v_line_color;
@@ -490,7 +522,7 @@
       
                 </script>
 
-        <script id="shader-vertex-terrain-sombrero" type="x-shader/x-vertex">
+    <script id="shader-vertex-terrain-sombrero" type="x-shader/x-vertex">
 
                     varying vec2  v_uv;
                     varying vec3  v_line_color;
@@ -524,11 +556,57 @@
                     }
       
                 </script>
+  </div>
+  <div class="manage">
+    <div class="prop-wrapper">
+      <label for="volume">Elevation</label>
+      <input type="range" step="0.01" id="elevation_input" name="elevation_input" min="-10" max="5" />
+      <div id="elevation_value">1</div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-    <script src="https://threejs.org/build/three.js"></script>
-    <script src="script.js"></script>
+    <div class="prop-wrapper">
+      <label for="volume">Noise range</label>
+      <input type="range" step="0.01" id="noise_range_input" name="noise_range_input" min="0" max="5" />
+      <div id="noise_range_value">1</div>
+    </div>
+    <div class="prop-wrapper">
+      <label for="volume">Perlin passes</label>
+      <input type="range" step="0.01" id="perlin_passes_input" name="perlin_passes_input" min="-10" max="10" />
+      <div id="perlin_passes_value">1</div>
+    </div>
+    <div class="prop-wrapper">
+      <label for="volume">Segments</label>
+      <input type="range" step="1" id="segments_input" name="segments_input" min="0" max="1000" />
+      <div id="segments_value">1</div>
+    </div>
+    <div class="prop-wrapper">
+      <label for="volume">Sombrero amplitude</label>
+      <input type="range" step="0.01" id="sombrero_amplitude_input" name="sombrero_amplitude_input" min="0" max="2" />
+      <div id="sombrero_amplitude_value">1</div>
+    </div>
+    <div class="prop-wrapper">
+      <label for="volume">Sombrero frequency</label>
+      <input type="range" step="1" id="sombrero_frequency_input" name="sombrero_frequency_input" min="0" max="200" />
+      <div id="sombrero_frequency_value">1</div>
+    </div>
+    <div class="prop-wrapper">
+      <label for="volume">Speed</label>
+      <input type="range" step="0.01" id="speed_input" name="speed_input" min="-5" max="0" />
+      <div id="speed_value">1</div>
+    </div>
+    <div class="prop-wrapper">
+        <label for="volume">Color</label>
+        <input type="color" id="color_input" name="color_input" />
+    </div>
+    <div class="prop-wrapper">
+        <label for="volume">Bg Color</label>
+        <input type="color" id="bg_color_input" name="bg_color_input" />
+    </div>
+
+  </div>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://threejs.org/build/three.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>

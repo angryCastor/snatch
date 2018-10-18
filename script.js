@@ -175,9 +175,47 @@ class Animate{
 }
 
 
+class InputManage{
+    constructor(value, input){
+        this.value = value;
+        this.input = input;
+    }
+
+    static get settings(){
+        return settings;
+    }
 
 
-let settings = {
+    change(prop_name){
+        let val = this.input.val();
+        InputManage.settings[prop_name] = val;
+        this.value.text(val);
+        $("#canvasGL").remove();
+        new Animate(InputManage.settings);
+    }
+}
+
+class Range extends InputManage{
+    constructor(value, input, name){
+        super(value, input);
+
+               
+
+        this.input.on("change", () => {
+            this.change(name);
+        });
+
+        this.input.val(InputManage.settings[name]);
+        this.input.trigger("change");
+    }
+}
+
+
+
+
+
+
+const settings = {
     elevation: "-2.4",
     floor_visible: false,
     noise_range: "1",
@@ -192,3 +230,22 @@ let settings = {
 
 
 new Animate(settings);
+new Range($("#elevation_value"), $("#elevation_input"), "elevation");
+new Range($("#noise_range_value"), $("#noise_range_input"), "noise_range");
+new Range($("#perlin_passes_value"), $("#perlin_passes_input"), "perlin_passes");
+new Range($("#segments_value"), $("#segments_input"), "segments");
+new Range($("#sombrero_amplitude_value"), $("#sombrero_amplitude_input"), "sombrero_amplitude");
+new Range($("#sombrero_frequency_value"), $("#sombrero_frequency_input"), "sombrero_frequency");
+new Range($("#speed_value"), $("#speed_input"), "speed");
+
+$("#color_input").val(InputManage.settings.wireframe_color);
+$("#color_input").on("change", () => {
+    InputManage.settings.wireframe_color = $("#color_input").val();
+    $("#canvasGL").remove();
+    new Animate(InputManage.settings);
+});
+
+$("#bg_color_input").val("#ffffff");
+$("#bg_color_input").on("change", () => {
+    $("body").css("background-color", $("#bg_color_input").val());
+});

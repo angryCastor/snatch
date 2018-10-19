@@ -108,6 +108,12 @@ class Terrain{
     update(){
         this.plane_material.uniforms.time.value = this.clock.getElapsedTime();
     }
+
+    dispose(){
+        this.materials[0].dispose();
+        this.plane_geometry.dispose();
+        this.plane_material.dispose();
+    }
 }
 
 class Animate{
@@ -134,6 +140,7 @@ class Animate{
             antialias: !1,
             alpha: !0
         });
+        this.isClose = false;
 
 
         this.init();
@@ -158,9 +165,12 @@ class Animate{
 
 
     update(){
-        requestAnimationFrame(this.update.bind(this));
         this.terrain.update();
         this.renderScene();
+        if(this.isClose){
+            return;
+        }
+        requestAnimationFrame(this.update.bind(this));
     }
 
     renderScene(){
@@ -171,6 +181,12 @@ class Animate{
         this.camera.aspect = width / height,
         this.camera.updateProjectionMatrix(),
         this.renderer.setSize(width, height)
+    }
+
+    dispose(){
+        this.renderer.dispose();
+        this.terrain.dispose();
+        this.isClose = true;
     }
 }
 
@@ -191,7 +207,8 @@ class InputManage{
         InputManage.settings[prop_name] = val;
         this.value.text(val);
         $("#canvasGL").remove();
-        new Animate(InputManage.settings);
+        animate.dispose();
+        animate = new Animate(InputManage.settings);
     }
 }
 
@@ -229,7 +246,7 @@ const settings = {
 }
 
 
-new Animate(settings);
+let animate = new Animate(settings);
 new Range($("#elevation_value"), $("#elevation_input"), "elevation");
 new Range($("#noise_range_value"), $("#noise_range_input"), "noise_range");
 new Range($("#perlin_passes_value"), $("#perlin_passes_input"), "perlin_passes");
@@ -242,7 +259,8 @@ $("#color_input").val(InputManage.settings.wireframe_color);
 $("#color_input").on("change", () => {
     InputManage.settings.wireframe_color = $("#color_input").val();
     $("#canvasGL").remove();
-    new Animate(InputManage.settings);
+    animate.dispose();
+    animate =new Animate(InputManage.settings);
 });
 
 $("#bg_color_input").val("#ffffff");

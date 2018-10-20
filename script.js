@@ -1,3 +1,5 @@
+
+
 THREE.SceneUtils = {
 
 	createMultiMaterialObject: function ( geometry, materials ) {
@@ -86,6 +88,7 @@ class Terrain{
                 value: new THREE.Color(this.options.wireframe_color)
             }
         }
+
         this.buildPlanes(this.options.segments);
     }
 
@@ -104,6 +107,7 @@ class Terrain{
         this.plane_mesh.rotation.x = -Math.PI / 2;
         this.plane_mesh.position.y = -.5;
     }
+
 
     update(){
         this.plane_material.uniforms.time.value = this.clock.getElapsedTime();
@@ -160,6 +164,8 @@ class Animate{
         document.getElementById("mountains-bg").appendChild(this.container)
         this.terrain = new Terrain(this.scene,this.terrainOptions);
         this.scene.add(this.terrain.plane_mesh);
+
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.update();
     }
 

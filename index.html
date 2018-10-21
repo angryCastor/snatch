@@ -37,6 +37,16 @@
       order: 2;
       
     }
+
+
+    .prop-wrapper.checkbox>input{
+      width: auto;
+    }
+
+     .prop-wrapper.checkbox>label{
+      flex-grow: 0;
+      margin-right: 20px;
+    }
     
   </style>
 </head>
@@ -601,6 +611,10 @@
     <div class="prop-wrapper">
       <label for="volume">Bg Color</label>
       <input type="color" id="bg_color_input" name="bg_color_input" />
+    </div>
+    <div class="prop-wrapper checkbox">
+      <label for="volume">Wireframe</label>
+      <input type="checkbox" step="0.01" id="wireframe_input" name="wireframe_input"/>
     </div>
 
   </div>

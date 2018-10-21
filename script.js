@@ -266,10 +266,18 @@ $("#color_input").on("change", () => {
     InputManage.settings.wireframe_color = $("#color_input").val();
     $("#canvasGL").remove();
     animate.dispose();
-    animate =new Animate(InputManage.settings);
+    animate = new Animate(InputManage.settings);
 });
 
 $("#bg_color_input").val("#ffffff");
 $("#bg_color_input").on("change", () => {
     $("body").css("background-color", $("#bg_color_input").val());
 });
+
+$("#wireframe_input").prop("checked", InputManage.settings.wireframe);
+$("#wireframe_input").on("change", () => {
+    InputManage.settings.wireframe = !InputManage.settings.wireframe;
+    $("#canvasGL").remove();
+    animate.dispose();
+    animate = new Animate(InputManage.settings);
+})
